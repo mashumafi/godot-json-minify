@@ -25,7 +25,7 @@ func test_load_instance():
 	assert(null != result)
 	assert(result['glossary'])
 
-func test_load_get_data():
+func test_load_get_data_duplicate():
 	var packed_json = load_test_packed_json()
 	var result = packed_json.get_data(true)
 	assert(null != result)
@@ -54,7 +54,7 @@ func test_load_get_data_lifetime():
 
 func test_load():
 	test_load_instance()
-	test_load_get_data()
+	test_load_get_data_duplicate()
 	test_load_get_data_cache()
 	test_load_get_data_lifetime()
 
