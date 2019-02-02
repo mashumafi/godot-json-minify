@@ -14,7 +14,7 @@ func set_data(filename):
 	if parsed_json.error != OK:
 		return parsed_json.error
 
-	__data__ = JSON.print(parsed_json.result).to_utf8()
+	__data__ = JSON.print(parsed_json.result).to_utf8().compress(File.COMPRESSION_GZIP)
 
 	return OK
 
@@ -22,7 +22,7 @@ var __cache__ = null
 
 func instance():
 	if null == __cache__:
-		var data = __data__.get_string_from_utf8()
+		var data = __data__.decompress(File.COMPRESSION_GZIP).get_string_from_utf8()
 		__data__.resize(0) # free the data
 		var parsed_json = JSON.parse(data)
 		if OK != parsed_json.error:
