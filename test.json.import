@@ -1,0 +1,13 @@
+[remap]
+
+importer="json-minify"
+type="PackedDataContainer"
+path="res://.import/test.json-b77711fd9047fe4d514e3dc0ef1f4ec2.res"
+
+[deps]
+
+source_file="res://test.json"
+dest_files=[ "res://.import/test.json-b77711fd9047fe4d514e3dc0ef1f4ec2.res" ]
+
+[params]
+
