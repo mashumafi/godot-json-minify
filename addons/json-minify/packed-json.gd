@@ -1,5 +1,23 @@
 extends PackedDataContainer
 
+enum Compression {
+	COMPRESSION_NONE,
+	COMPRESSION_FASTLZ,
+	COMPRESSION_DEFLATE,
+	COMPRESSION_ZSTD,
+	COMPRESSION_GZIP
+}
+const CompressionMap = {
+	COMPRESSION_NONE: -1,
+	COMPRESSION_FASTLZ: File.COMPRESSION_FASTLZ,
+	COMPRESSION_DEFLATE: File.COMPRESSION_DEFLATE,
+	COMPRESSION_ZSTD: File.COMPRESSION_ZSTD,
+	COMPRESSION_GZIP: File.COMPRESSION_GZIP
+}
+
+export(bool) var binary = true
+export(Compression) var compression = COMPRESSION_FASTLZ
+
 func set_data(filename):
 	var input = File.new()
 	var err = input.open(filename, File.READ)
@@ -14,7 +32,15 @@ func set_data(filename):
 	if parsed_json.error != OK:
 		return parsed_json.error
 
-	__data__ = JSON.print(parsed_json.result).to_utf8().compress(File.COMPRESSION_GZIP)
+	
+	if binary:
+		__data__ = var2bytes(parsed_json.result)
+	else:
+		__data__ = JSON.print(parsed_json.result).to_utf8()
+
+	var compression = CompressionMap[self.compression]
+	if compression != -1:
+		__data__ = __data__.compress(compression)
 
 	return OK
 
@@ -22,13 +48,25 @@ var __cache__ = null
 
 func instance():
 	if null == __cache__:
-		var data = __data__.decompress(File.COMPRESSION_GZIP).get_string_from_utf8()
+		var data = __data__
+
+		var compression = CompressionMap[self.compression]
+		if compression != -1:
+			data = data.decompress(data.size()*2, compression)
+
+		if binary:
+			return bytes2var(data)
+		else:
+			data = data.get_string_from_utf8()
+			var parsed_json = JSON.parse(data)
+			if OK != parsed_json.error:
+				var format = [parsed_json.error_line, parsed_json.error_string]
+				var error_string = "%d: %s" % format
+				print(error_string)
+				return null
+			data = parsed_json.result
+
 		__data__.resize(0) # free the data
-		var parsed_json = JSON.parse(data)
-		if OK != parsed_json.error:
-			var format = [parsed_json.error_line, parsed_json.error_string]
-			var error_string = "%d: %s" % format
-			print(error_string)
-			return null
-		__cache__ = parsed_json.result
+		
+		__cache__ = data
 	return __cache__

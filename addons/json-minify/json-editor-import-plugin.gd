@@ -3,7 +3,7 @@ extends EditorImportPlugin
 
 const PackedJSON = preload('packed-json.gd')
 
-enum Presets { PRESET_MINIFY }
+enum Presets { PRESET_BINARY, PRESET_MINIFY }
 
 func get_importer_name():
 	return "json-minify"
@@ -25,16 +25,32 @@ func get_preset_count():
 
 func get_preset_name(preset):
 	match preset:
+		PRESET_BINARY:
+			return "Binary"
 		PRESET_MINIFY:
 			return "Minify"
 		_:
 			return "Unknown"
 
 func get_import_options(preset):
-	return []
+	return [
+		{
+			'name': 'binary',
+			'default_value': PRESET_BINARY == preset
+		},
+		{
+			'name': 'compression',
+			'default_value': PackedJSON.COMPRESSION_FASTLZ,
+			'property_hint': PROPERTY_HINT_ENUM,
+			'hint_string': 'none,fastlz,deflate,zstd,gzip',
+			'usage': PROPERTY_USAGE_EDITOR
+		}
+	]
 
 func import(source_file, save_path, options, r_platform_variants, r_gen_files):
 	var packed_json = PackedJSON.new()
+	packed_json.binary = options['binary']
+	packed_json.compression = options['compression']
 	var result = packed_json.set_data(source_file)
 	if result != OK:
 		return FAILED

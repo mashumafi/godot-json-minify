@@ -11,3 +11,5 @@ dest_files=[ "res://.import/test.json-b77711fd9047fe4d514e3dc0ef1f4ec2.res" ]
 
 [params]
 
+binary=true
+compression=1
