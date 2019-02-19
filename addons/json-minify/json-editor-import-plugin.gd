@@ -23,6 +23,9 @@ func get_resource_type():
 func get_preset_count():
 	return Presets.size()
 
+func get_option_visibility(option, options):
+	return true
+
 func get_preset_name(preset):
 	match preset:
 		PRESET_BINARY:
@@ -40,9 +43,9 @@ func get_import_options(preset):
 		},
 		{
 			'name': 'compression',
-			'default_value': PackedJSON.COMPRESSION_FASTLZ,
+			'default_value': PackedJSON.COMPRESSION_BEST,
 			'property_hint': PROPERTY_HINT_ENUM,
-			'hint_string': 'none,fastlz,deflate,zstd,gzip',
+			'hint_string': 'none,fastlz,deflate,zstd,gzip,best',
 			'usage': PROPERTY_USAGE_EDITOR
 		}
 	]
