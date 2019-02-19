@@ -56,8 +56,8 @@ func _compress_data():
 	var data = __data__
 	var compression = COMPRESSION_NONE
 	for c in compressions:
-		c = CompressionMap[c]
-		var result = __data__.compress(c)
+		var compresion_mode = CompressionMap[c]
+		var result = __data__.compress(compresion_mode)
 		if result.size() < data.size():
 			data = result
 			compression = c
