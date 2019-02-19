@@ -23,6 +23,9 @@ func get_resource_type():
 func get_preset_count():
 	return Presets.size()
 
+func get_option_visibility(option, options):
+	return true
+
 func get_preset_name(preset):
 	match preset:
 		PRESET_BINARY:
