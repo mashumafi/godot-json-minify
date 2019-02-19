@@ -51,7 +51,6 @@ func set_data(filename):
 	return OK
 
 const compressions = [COMPRESSION_FASTLZ, COMPRESSION_DEFLATE, COMPRESSION_ZSTD, COMPRESSION_GZIP]
-
 func _compress_data():
 	var data = __data__
 	var compression = COMPRESSION_NONE
@@ -90,6 +89,6 @@ func instance():
 			data = parsed_json.result
 
 		__data__.resize(0) # free the data
-		
+
 		__cache__ = data
 	return __cache__
