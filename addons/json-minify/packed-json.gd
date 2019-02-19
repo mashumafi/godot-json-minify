@@ -5,7 +5,8 @@ enum Compression {
 	COMPRESSION_FASTLZ,
 	COMPRESSION_DEFLATE,
 	COMPRESSION_ZSTD,
-	COMPRESSION_GZIP
+	COMPRESSION_GZIP,
+	COMPRESSION_BEST
 }
 const CompressionMap = {
 	COMPRESSION_NONE: -1,
@@ -16,7 +17,8 @@ const CompressionMap = {
 }
 
 export(bool) var binary = true
-export(Compression) var compression = COMPRESSION_FASTLZ
+export(Compression) var compression = COMPRESSION_BEST
+export(int) var original_size
 
 func set_data(filename):
 	var input = File.new()
@@ -31,18 +33,36 @@ func set_data(filename):
 	var parsed_json = JSON.parse(json)
 	if parsed_json.error != OK:
 		return parsed_json.error
-
 	
 	if binary:
 		__data__ = var2bytes(parsed_json.result)
 	else:
 		__data__ = JSON.print(parsed_json.result).to_utf8()
 
-	var compression = CompressionMap[self.compression]
-	if compression != -1:
-		__data__ = __data__.compress(compression)
+	original_size = __data__.size()
+
+	if self.compression == COMPRESSION_BEST:
+		self.compression = _compress_data()
+	else:
+		var compression = CompressionMap[self.compression]
+		if compression != -1:
+			__data__ = __data__.compress(compression)
 
 	return OK
+
+const compressions = [COMPRESSION_FASTLZ, COMPRESSION_DEFLATE, COMPRESSION_ZSTD, COMPRESSION_GZIP]
+
+func _compress_data():
+	var data = __data__
+	var compression = COMPRESSION_NONE
+	for c in compressions:
+		c = CompressionMap[c]
+		var result = __data__.compress(c)
+		if result.size() < data.size():
+			data = result
+			compression = c
+	__data__ = data
+	return compression
 
 var __cache__ = null
 
@@ -50,9 +70,12 @@ func instance():
 	if null == __cache__:
 		var data = __data__
 
+		if self.compression == COMPRESSION_BEST:
+			print("Using best compression is not valid when decoding")
+			return null
 		var compression = CompressionMap[self.compression]
 		if compression != -1:
-			data = data.decompress(data.size()*2, compression)
+			data = data.decompress(original_size, compression)
 
 		if binary:
 			return bytes2var(data)
@@ -62,7 +85,7 @@ func instance():
 			if OK != parsed_json.error:
 				var format = [parsed_json.error_line, parsed_json.error_string]
 				var error_string = "%d: %s" % format
-				print(error_string)
+				print("Could not parse json", error_string)
 				return null
 			data = parsed_json.result
 

@@ -40,9 +40,9 @@ func get_import_options(preset):
 		},
 		{
 			'name': 'compression',
-			'default_value': PackedJSON.COMPRESSION_FASTLZ,
+			'default_value': PackedJSON.COMPRESSION_BEST,
 			'property_hint': PROPERTY_HINT_ENUM,
-			'hint_string': 'none,fastlz,deflate,zstd,gzip',
+			'hint_string': 'none,fastlz,deflate,zstd,gzip,best',
 			'usage': PROPERTY_USAGE_EDITOR
 		}
 	]
