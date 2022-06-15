@@ -50,11 +50,11 @@ func get_import_options(preset: int) -> Array:
 		}
 	]
 
-func import(source_file: String, save_path: String, options: Dictionary, r_platform_variants, r_gen_files):
+func import(source_file: String, save_path: String, options: Dictionary, r_platform_variants: Array, r_gen_files: Array):
 	var packed_json := PackedJSON.new()
 	packed_json.binary = options['binary']
 	packed_json.compression = options['compression']
-	var result = packed_json.set_data(source_file)
+	var result := packed_json.set_data(source_file)
 	if result != OK:
 		return FAILED
 	return ResourceSaver.save("%s.%s" % [save_path, get_save_extension()], packed_json)

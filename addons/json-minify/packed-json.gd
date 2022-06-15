@@ -21,7 +21,7 @@ export(bool) var binary := true
 export(Compression) var compression := Compression.BEST
 export(int) var original_size : int
 
-func set_data(filename: String):
+func set_data(filename: String) -> int:
 	var input := File.new()
 	var err := input.open(filename, File.READ)
 	if err != OK:
