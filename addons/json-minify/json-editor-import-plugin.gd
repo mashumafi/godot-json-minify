@@ -28,22 +28,22 @@ func get_option_visibility(option, options):
 
 func get_preset_name(preset):
 	match preset:
-		PRESET_BINARY:
+		Presets.PRESET_BINARY:
 			return "Binary"
-		PRESET_MINIFY:
+		Presets.PRESET_MINIFY:
 			return "Minify"
 		_:
 			return "Unknown"
 
-func get_import_options(preset):
+func get_import_options(preset: int) -> Array:
 	return [
 		{
 			'name': 'binary',
-			'default_value': PRESET_BINARY == preset
+			'default_value': Presets.PRESET_BINARY == preset
 		},
 		{
 			'name': 'compression',
-			'default_value': PackedJSON.COMPRESSION_BEST,
+			'default_value': PackedJSON.Compression.COMPRESSION_BEST,
 			'property_hint': PROPERTY_HINT_ENUM,
 			'hint_string': 'none,fastlz,deflate,zstd,gzip,best',
 			'usage': PROPERTY_USAGE_EDITOR

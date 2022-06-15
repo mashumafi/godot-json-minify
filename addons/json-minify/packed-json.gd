@@ -8,16 +8,17 @@ enum Compression {
 	COMPRESSION_GZIP,
 	COMPRESSION_BEST
 }
-const CompressionMap = {
-	COMPRESSION_NONE: -1,
-	COMPRESSION_FASTLZ: File.COMPRESSION_FASTLZ,
-	COMPRESSION_DEFLATE: File.COMPRESSION_DEFLATE,
-	COMPRESSION_ZSTD: File.COMPRESSION_ZSTD,
-	COMPRESSION_GZIP: File.COMPRESSION_GZIP
+
+var CompressionMap := {
+	Compression.COMPRESSION_NONE: -1,
+	Compression.COMPRESSION_FASTLZ: File.COMPRESSION_FASTLZ,
+	Compression.COMPRESSION_DEFLATE: File.COMPRESSION_DEFLATE,
+	Compression.COMPRESSION_ZSTD: File.COMPRESSION_ZSTD,
+	Compression.COMPRESSION_GZIP: File.COMPRESSION_GZIP
 }
 
 export(bool) var binary = true
-export(Compression) var compression = COMPRESSION_BEST
+export(Compression) var compression = Compression.COMPRESSION_BEST
 export(int) var original_size
 
 func set_data(filename):
@@ -33,7 +34,7 @@ func set_data(filename):
 	var parsed_json = JSON.parse(json)
 	if parsed_json.error != OK:
 		return parsed_json.error
-	
+
 	if binary:
 		__data__ = var2bytes(parsed_json.result)
 	else:
@@ -41,7 +42,7 @@ func set_data(filename):
 
 	original_size = __data__.size()
 
-	if self.compression == COMPRESSION_BEST:
+	if self.compression == Compression.COMPRESSION_BEST:
 		self.compression = _compress_data()
 	else:
 		var compression = CompressionMap[self.compression]
@@ -50,10 +51,10 @@ func set_data(filename):
 
 	return OK
 
-const compressions = [COMPRESSION_FASTLZ, COMPRESSION_DEFLATE, COMPRESSION_ZSTD, COMPRESSION_GZIP]
+var compressions := [Compression.COMPRESSION_FASTLZ, Compression.COMPRESSION_DEFLATE, Compression.COMPRESSION_ZSTD, Compression.COMPRESSION_GZIP]
 func _compress_data():
 	var data = __data__
-	var compression = COMPRESSION_NONE
+	var compression = Compression.COMPRESSION_NONE
 	for c in compressions:
 		var compresion_mode = CompressionMap[c]
 		var result = __data__.compress(compresion_mode)
@@ -69,7 +70,7 @@ func instance():
 	if null == __cache__:
 		var data = __data__
 
-		if self.compression == COMPRESSION_BEST:
+		if self.compression == Compression.COMPRESSION_BEST:
 			print("Using best compression is not valid when decoding")
 			return null
 		var compression = CompressionMap[self.compression]
