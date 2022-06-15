@@ -11,6 +11,7 @@ config_version=4
 [application]
 
 config/name="godot-json-minify"
+config/use_hidden_project_data_directory=false
 config/icon="res://icon.png"
 
 [editor_plugins]
