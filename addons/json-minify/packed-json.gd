@@ -9,7 +9,7 @@ enum Compression {
 	COMPRESSION_BEST
 }
 
-var CompressionMap := {
+const COMPRESSION_MAP := {
 	Compression.COMPRESSION_NONE: -1,
 	Compression.COMPRESSION_FASTLZ: File.COMPRESSION_FASTLZ,
 	Compression.COMPRESSION_DEFLATE: File.COMPRESSION_DEFLATE,
@@ -45,18 +45,18 @@ func set_data(filename):
 	if self.compression == Compression.COMPRESSION_BEST:
 		self.compression = _compress_data()
 	else:
-		var compression = CompressionMap[self.compression]
+		var compression = COMPRESSION_MAP[self.compression]
 		if compression != -1:
 			__data__ = __data__.compress(compression)
 
 	return OK
 
-var compressions := [Compression.COMPRESSION_FASTLZ, Compression.COMPRESSION_DEFLATE, Compression.COMPRESSION_ZSTD, Compression.COMPRESSION_GZIP]
+const COMPRESSIONS := [Compression.COMPRESSION_FASTLZ, Compression.COMPRESSION_DEFLATE, Compression.COMPRESSION_ZSTD, Compression.COMPRESSION_GZIP]
 func _compress_data():
 	var data = __data__
 	var compression = Compression.COMPRESSION_NONE
-	for c in compressions:
-		var compresion_mode = CompressionMap[c]
+	for c in COMPRESSIONS:
+		var compresion_mode = COMPRESSION_MAP[c]
 		var result = __data__.compress(compresion_mode)
 		if result.size() < data.size():
 			data = result
@@ -73,7 +73,7 @@ func instance():
 		if self.compression == Compression.COMPRESSION_BEST:
 			print("Using best compression is not valid when decoding")
 			return null
-		var compression = CompressionMap[self.compression]
+		var compression = COMPRESSION_MAP[self.compression]
 		if compression != -1:
 			data = data.decompress(original_size, compression)
 
